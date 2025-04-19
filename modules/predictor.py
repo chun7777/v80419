@@ -47,7 +47,9 @@ def score_stocks(df):
         if struct_result.get("false_break_support"): s += 1
         if struct_result.get("liquidity_sweep"): s += 1
 
-        chip_result = analyze_chip(str(int(row["stock"])) if "stock" in row else "2330")
+        stock_raw = str(row["stock"]) if "stock" in row else "2330"
+        stock_clean = stock_raw.replace("='", "").replace('"', "").replace("=", "").replace("'", "").strip()
+        chip_result = analyze_chip(stock_clean)
         s += chip_result["chip_score"]
 
         # 加入布林通道突破判斷
