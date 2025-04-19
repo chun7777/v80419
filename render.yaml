@@ -1,0 +1,9 @@
+
+services:
+  - type: web
+    name: tw-stock-ai
+    env: python
+    buildCommand: ""
+    startCommand: python app.py
+    plan: free
+    region: taipei

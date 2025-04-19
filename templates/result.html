@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>台股當沖預測結果</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .highlight-green { background-color: #d4f4dd; }
+        .highlight-red { background-color: #f8d0d0; }
+    </style>
+</head>
+<body>
+    <h2>Top 3 當沖預測（生成時間：2025-04-18 17:48:10）</h2>
+    <table border="1" cellpadding="5">
+        <tr>
+            <th>股票</th><th>方向</th><th>進場</th><th>停損</th><th>停利</th>
+            <th>支撐(來源)</th><th>壓力(來源)</th><th>目前價格</th><th>策略提示</th>
+        </tr>
+        {% for s in strategies %}
+        <tr id="row-{{s.stock}}">
+            <td>{{s.name}}</td>
+            <td>{{s.direction}}</td>
+            <td>{{s.entry}}</td>
+            <td>{{s.stop_loss}}</td>
+            <td>{{s.take_profit}}</td>
+            <td class="support">{{s.support}}</td>
+            <td class="resistance">{{s.resistance}}</td>
+            <td class="price" data-stock="{{s.stock}}">-</td>
+            <td class="message">-</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <p>最後更新時間：<span id="last-updated">2025-04-18 17:48:10</span></p>
+
+    <script src="/static/js/monitor.js"></script>
+    <script>
+        setInterval(function () {
+            var now = new Date();
+            document.getElementById("last-updated").innerText =
+                now.toLocaleString();
+        }, 30000);
+    </script>
+</body>
+</html>
