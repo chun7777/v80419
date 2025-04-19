@@ -1,24 +1,13 @@
 
-from modules.live_data import fetch_twse_realtime_data
-
-# 模擬從預測模型取得 Top 3 股票代碼（實際應由預測結果提供）
-latest_top3 = ["2324", "3231", "3037"]
-
-@app.route("/monitor")
-def monitor():
-    data = fetch_twse_realtime_data(latest_top3)
-    return jsonify(data)
-
-from modules.learner import learn_from_backtest
-
-@app.route("/run_backtest")
-def run_backtest_route():
-    run_backtest()
-    result = learn_from_backtest()
-    return f"<b>✅ 回測學習已完成</b><br><pre>{result}</pre><br><a href='/'>返回首頁</a>"
-
+from flask import Flask, render_template, request, jsonify
 from modules.post_close_data import fetch_twse_postclose
 from modules.predictor import score_stocks
+
+app = Flask(__name__)
+
+@app.route("/")
+def index():
+    return render_template("index.html")
 
 @app.route("/predict", methods=["GET", "POST"])
 def predict():
@@ -41,3 +30,8 @@ def predict():
                 "resistance": round(row["high"], 2)
             })
         return render_template("result.html", strategies=strategies)
+
+if __name__ == "__main__":
+    import os
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
