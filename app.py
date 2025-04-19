@@ -1,5 +1,5 @@
 
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request
 from modules.post_close_data import fetch_twse_postclose
 from modules.predictor import score_stocks
 
@@ -9,12 +9,11 @@ app = Flask(__name__)
 def index():
     return render_template("index.html")
 
-@app.route("/predict", methods=["GET", "POST"])
+@app.route("/predict", methods=["POST"])
 def predict():
-    if request.method == "GET":
-        return render_template("index.html")
-    else:
+    try:
         date_str = request.form.get("predict_date")
+        print(f"🔍 收到預測日期：{date_str}")
         df = fetch_twse_postclose(date_str)
         top3 = score_stocks(df)
         strategies = []
@@ -30,6 +29,9 @@ def predict():
                 "resistance": round(row["high"], 2)
             })
         return render_template("result.html", strategies=strategies)
+    except Exception as e:
+        print("❌ 預測發生錯誤：", e)
+        return f"<h3>預測失敗：{e}</h3>"
 
 if __name__ == "__main__":
     import os
