@@ -18,8 +18,7 @@ def fetch_twse_postclose(date_str):
     # 清除無用行並保留包含 "證券代號" 的表格
     raw_lines = r.text.splitlines()
     start = next(i for i, line in enumerate(raw_lines) if "證券代號" in line)
-    csv_text = "
-".join(raw_lines[start:])
+    csv_text = "\n".join(raw_lines[start:])
     csv_io = StringIO(csv_text)
 
     df = pd.read_csv(csv_io)
