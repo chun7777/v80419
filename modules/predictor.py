@@ -47,17 +47,15 @@ def score_stocks(df):
         if struct_result.get("false_break_support"): s += 1
         if struct_result.get("liquidity_sweep"): s += 1
 
+        # 修正 stock 欄位格式錯誤問題
         stock_raw = str(row["stock"]) if "stock" in row else "2330"
         stock_clean = stock_raw.replace("='", "").replace('"', "").replace("=", "").replace("'", "").strip()
         chip_result = analyze_chip(stock_clean)
         s += chip_result["chip_score"]
 
-        # 加入布林通道突破判斷
         breakout_result = detect_bollinger_breakout(df.iloc[max(i - 20, 0):i + 1].copy())
-        if breakout_result["break_upper"]:
-            s += 1.5  # 強勢上攻加分
-        if breakout_result["break_lower"]:
-            s -= 1.0  # 跌破布林下緣偏弱警訊
+        if breakout_result["break_upper"]: s += 1.5
+        if breakout_result["break_lower"]: s -= 1.0
 
         df.at[i, "structure_score"] = s
         df.at[i, "chip_score"] = chip_result["chip_score"]
